@@ -216,5 +216,4 @@ const Popup = () => {
     );
 };
 
-// ReactDOM.render(<Popup />, document.getElementById('root'));
-export default Popup;
+ReactDOM.render(<Popup />, document.getElementById('root'));

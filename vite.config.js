@@ -7,17 +7,24 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, 'public/popup.html'), // popup.html 位于 public 目录
-        background: resolve(__dirname, 'src/background.js'), // 确保 background.js 被打包
-        ShowPageTag: resolve(__dirname, 'src/ShowPageTag.js'), // 确保 ShowPageTag.js 被打包
-        index: resolve(__dirname, 'index.html') // 新添加的 main.html 文件路径
+        popup: resolve(__dirname, 'public/popup.html'),
+        background: resolve(__dirname, 'src/background.js'),
+        ShowPageTag: resolve(__dirname, 'src/ShowPageTag.js'),
       },
       output: {
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`,
-        format: 'es', // 使用 ES Module 格式替换 iife
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
       }
-    }
-  }
+    },
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true,
+    target: 'es2015',
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
 });

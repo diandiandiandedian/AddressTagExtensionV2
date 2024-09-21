@@ -11,7 +11,6 @@ import { http } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
 import Profile from './components/Profile';
-import Popup from './popup'
 
 const airdaoTestNetWork = [
     {
@@ -78,7 +77,6 @@ function App() {
             <QueryClientProvider client={queryClient}>
               <DynamicWagmiConnector>
                 <Profile/>
-                {/* <Popup /> */}
               </DynamicWagmiConnector>
             </QueryClientProvider>
           </WagmiProvider>
