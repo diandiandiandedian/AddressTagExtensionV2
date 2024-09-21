@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import './style.css';
+import { useWriteContract, useWaitForTransactionReceipt, useSimulateContract } from 'wagmi'
+import { useEmbeddedWallet } from "@dynamic-labs/sdk-react-core";
+
+const abi = [
+  {
+    "type": "function",
+    "name": "mintAddressTagSBT",
+    "inputs": [
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "id",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]
 
 const Popup = () => {
     const [transactions, setTransactions] = useState([]);
@@ -16,6 +37,36 @@ const Popup = () => {
     const [content, setContent] = useState('');
     const [link, setLink] = useState([]);
 
+    const { data: simulateData } = useSimulateContract({
+        address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+        abi: abi,
+        functionName: 'mintAddressTagSBT',
+        args: ['0xA552c195A6eEC742B61042531fb92732F8A91D6b', 0n],
+      })
+    
+      const { writeContract, data, error, isPending } = useWriteContract()
+    
+      const { isLoading: isConfirming, isSuccess: isConfirmed } =
+        useWaitForTransactionReceipt({
+          hash: data,
+        })
+    
+      const handleMint = () => {
+        if (simulateData) {
+          writeContract(simulateData.request)
+        }
+      }
+
+
+      const {userHasEmbeddedWallet} = useEmbeddedWallet();
+
+      if(!userHasEmbeddedWallet()){
+          return <div>
+              Please sign in to wallet
+          </div>
+      }
+
+      
     // 预先加载图片列表
     const images = Array.from({ length: 10 }, (_, index) => `/heads/${index + 1}.png`);
 
@@ -116,10 +167,11 @@ const Popup = () => {
                 return;
             }
         });
+        handleMint();
 
         setContent('');
         setLink('');
-        alert(`已保存: ${selectedTag}`);
+        // alert(`Tagged: ${selectedTag}`);
     };
 
     const shortenAddress = (address) => {
@@ -207,8 +259,21 @@ const Popup = () => {
                         <button
                             onClick={handleSave}
                             style={{ marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none" }}>
-                            Save
+                            {isConfirming ? 'Tagging...' : 'Tag'}
                         </button>
+                        {isConfirmed && (
+                            <div>
+                            Successfully tagged the address!
+                            <div>
+                                <a href={`https://testnet.airdao.io/explorer/tx/${data}`}>Explorer</a>
+                            </div>
+                            </div>
+                        )}
+                        {error && (
+                            <div>
+                            An error occurred: {error.message}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

@@ -1,5 +1,4 @@
 import React from 'react';
-import DynamicConnection from './components/DynamicConnection';
 import { DynamicContextProvider, mergeNetworks } from '@dynamic-labs/sdk-react-core';
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector';
 import {
@@ -10,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { http } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
-import Profile from './components/Profile';
+import Layout from './components/Layout';
 
 const airdaoTestNetWork = [
     {
@@ -76,7 +75,7 @@ function App() {
           <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
               <DynamicWagmiConnector>
-                <Profile/>
+                <Layout/>
               </DynamicWagmiConnector>
             </QueryClientProvider>
           </WagmiProvider>

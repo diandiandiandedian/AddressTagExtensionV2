@@ -67,3 +67,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@font-face {
+  font-family: 'Londrina Solid';
+  src: url('/public/fonts/LondrinaSolid-Light.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Londrina Solid", Tofu;
+}
