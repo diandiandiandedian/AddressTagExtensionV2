@@ -8,7 +8,7 @@
     "service_worker": "assets/background.js" // 注意：最终路径会在打包后变成 assets/background.js
   },
   "action": {
-    "default_popup": "popup.html" // popup.html 放在 public 目录下
+    "default_popup": "main.html" // popup.html 放在 public 目录下
   },
   "content_scripts": [
     {
