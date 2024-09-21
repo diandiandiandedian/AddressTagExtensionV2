@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "AddressTagExtensionV2",
+  "version": "1.0.0",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "assets/background.js" // 注意：最终路径会在打包后变成 assets/background.js
+  },
+  "action": {
+    "default_popup": "popup.html" // popup.html 放在 public 目录下
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["assets/contentScript.js"], // 指向打包后的文件路径
+      "run_at": "document_idle"
+    }
+  ]
+}
