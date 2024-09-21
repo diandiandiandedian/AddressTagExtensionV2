@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'Londrina Solid';
+  src: url('/public/fonts/LondrinaSolid-Light.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Londrina Solid", Tofu;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, 'public/popup.html'),
+        popup: resolve(__dirname, 'popup.html'),
         background: resolve(__dirname, 'src/background.js'),
         ShowPageTag: resolve(__dirname, 'src/ShowPageTag.js'),
       },
@@ -20,7 +20,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
-    target: 'es2015',
+    target: 'es2020',
   },
   resolve: {
     alias: {

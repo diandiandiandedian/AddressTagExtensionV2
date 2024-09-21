@@ -2,19 +2,19 @@
   "manifest_version": 3,
   "name": "AddressTagExtensionV2",
   "version": "1.0.0",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": ["activeTab", "scripting","tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "assets/background.js"
+    "service_worker": "assets/background.js" // 注意：最终路径会在打包后变成 assets/background.js
   },
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "../popup.html" // popup.html 放在 public 目录下
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["assets/ShowPageTag.js"],
-      "run_at": "document_idle"
+      "matches": ["<all_urls>"], // 或指定你希望脚本运行的 URL
+      "js": ["assets/ShowPageTag.js"], // 指向打包后的 ShowPageTag.js 文件
+      "run_at": "document_idle" // 页面加载完成后执行
     }
   ]
 }

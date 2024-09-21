@@ -7,11 +7,11 @@ const Profile = () => {
 
     const {userHasEmbeddedWallet} = useEmbeddedWallet();
 
-    if(!userHasEmbeddedWallet()){
-        return <div>
-            Please sign in to wallet
-        </div>
-    }
+    // if(!userHasEmbeddedWallet()){
+    //     return <div>
+    //         Please sign in to wallet
+    //     </div>
+    // }
 
     return (
         <div>
