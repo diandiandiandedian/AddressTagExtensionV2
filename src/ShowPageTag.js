@@ -41,7 +41,12 @@ function createTag(content, link) {
     customDiv.style.padding = '5px 15px';
     customDiv.style.margin = '5px';
     customDiv.style.borderRadius = '20px';
-    customDiv.style.backgroundColor = '#4caf50';
+
+    // 随机选择一个颜色
+    const colors = ['#0784c3', '#4caf50', '#FF0000'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    customDiv.style.backgroundColor = randomColor;
+
     customDiv.style.color = '#fff';
     customDiv.style.fontSize = '14px';
     customDiv.style.fontWeight = 'bold';
@@ -120,10 +125,6 @@ window.addEventListener('load', () => {
                 const tag = createTag(item.content, item.link);
                 targetElement.appendChild(tag);
             });
-
-            // 在标签列表后面添加 "Add New" 按钮
-            // const addNewButton = createAddNewButton();
-            // targetElement.appendChild(addNewButton);
         }
     });
 

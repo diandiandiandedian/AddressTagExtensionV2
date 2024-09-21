@@ -21,7 +21,7 @@ const abi = [
         "outputs": [],
         "stateMutability": "nonpayable"
     }
-]
+];
 
 const Popup = () => {
     const [transactions, setTransactions] = useState([]);
@@ -35,6 +35,7 @@ const Popup = () => {
         "Miner Address", "Airdrop Distributor", "DEX Liquidity Provider"
     ]);
     const [selectedTag, setSelectedTag] = useState('');
+    const [selectedTagColor, setSelectedTagColor] = useState('');
     const [content, setContent] = useState('');
     const [link, setLink] = useState([]);
 
@@ -43,30 +44,29 @@ const Popup = () => {
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: ['0xA552c195A6eEC742B61042531fb92732F8A91D6b', 0n],
-    })
+    });
 
-    const {writeContract, data, error, isPending} = useWriteContract()
-
-    const {isLoading: isConfirming, isSuccess: isConfirmed} =
-        useWaitForTransactionReceipt({
-            hash: data,
-        })
+    const {writeContract, data, error, isPending} = useWriteContract();
+    const {isLoading: isConfirming, isSuccess: isConfirmed} = useWaitForTransactionReceipt({
+        hash: data,
+    });
 
     const handleMint = () => {
         if (simulateData) {
-            writeContract(simulateData.request)
+            writeContract(simulateData.request);
         }
-    }
-
+    };
 
     const {userHasEmbeddedWallet} = useEmbeddedWallet();
-
 
     // 预先加载图片列表
     const images = Array.from({length: 10}, (_, index) => `/heads/${index + 1}.png`);
 
     // 为每个标签生成一个随机图片，仅在首次渲染时生成
     const [tagImages] = useState(tags.map(() => images[Math.floor(Math.random() * images.length)]));
+
+    // 颜色数组
+    const tagColors = ['#0784c3', '#4caf50', '#FF0000'];
 
     // 保留两个入口
     useEffect(() => {
@@ -94,11 +94,11 @@ const Popup = () => {
             }
         });
     }, []);
+
     if (!userHasEmbeddedWallet()) {
-        return <div>
-            Please sign in to wallet
-        </div>
+        return <div>Please sign in to wallet</div>;
     }
+
     const fetchTransactionData = async (address) => {
         const url = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=IGT34AFR7ABQUKYEWJAQ65A1Y5JV11UYH4`;
 
@@ -151,16 +151,7 @@ const Popup = () => {
             tag: selectedTag
         };
 
-        // chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        //     chrome.tabs.sendMessage(tabs[0].id, {
-        //         type: 'addTag',
-        //         content: payload.content,
-        //         link: payload.link,
-        //         address: payload.address
-        //     });
-        // });
-
-        sendPostRequest('https://testapi.ezswap.io/addressTag/save', {address: saveAddress, content: content, link: transactionLink, tag: selectedTag}, (error, response) => {
+        sendPostRequest('https://testapi.ezswap.io/addressTag/save', { address: saveAddress, content: content, link: transactionLink, tag: selectedTag }, (error, response) => {
             if (error) {
                 console.error('Request Failed:', error);
                 return;
@@ -170,7 +161,6 @@ const Popup = () => {
 
         setContent('');
         setLink('');
-        // alert(`Tagged: ${selectedTag}`);
     };
 
     const shortenAddress = (address) => {
@@ -178,34 +168,40 @@ const Popup = () => {
     };
 
     const goAddTag = (tx, address) => {
-        setSelectedTx(tx)
-        setSaveAddress(address)
+        setSelectedTx(tx);
+        setSaveAddress(address);
+    };
+
+    const handleTagClick = (tag) => {
+        setSelectedTag(tag);
+        const randomColor = tagColors[Math.floor(Math.random() * tagColors.length)];
+        setSelectedTagColor(randomColor);
     };
 
     return (
-        <div style={{padding: '20px', fontFamily: 'Arial, sans-serif'}}>
+        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
             {!selectedTx ? (
                 <div>
-                    <h2 style={{fontFamily: "Londrina Solid, Tofu", fontSize: '20px'}}>Tx List</h2>
-                    <div style={{maxHeight: '400px', overflowY: 'auto', fontFamily: "Londrina Solid, Tofu"}}>
-                        <table style={{width: '100%', borderCollapse: 'collapse'}}>
+                    <h2 style={{ fontFamily: "Londrina Solid, Tofu", fontSize: '20px' }}>Tx List</h2>
+                    <div style={{ maxHeight: '400px', overflowY: 'auto', fontFamily: "Londrina Solid, Tofu" }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                             <tr>
-                                <th style={{textAlign: 'left', padding: '5px'}}>Hash</th>
-                                <th style={{textAlign: 'left', padding: '5px'}}>Address</th>
-                                <th style={{textAlign: 'left', padding: '5px'}}>Action</th>
+                                <th style={{ textAlign: 'left', padding: '5px' }}>Hash</th>
+                                <th style={{ textAlign: 'left', padding: '5px' }}>Address</th>
+                                <th style={{ textAlign: 'left', padding: '5px' }}>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             {transactions.map(tx => (
-                                <tr key={tx.hash} style={{borderBottom: '1px solid #ddd'}}>
-                                    <td style={{padding: '5px'}}>{shortenAddress(tx.hash)}</td>
-                                    <td style={{padding: '5px'}}>
-                                        {shortenAddress(tx.from === currentAddress.toLowerCase() ? tx.to : tx.from)}
+                                <tr key={tx.hash} style={{ borderBottom: '1px solid #ddd' }}>
+                                    <td style={{ padding: '5px' }}>{shortenAddress(tx.hash)}</td>
+                                    <td style={{ padding: '5px' }}>
+                                        {shortenAddress(tx.from === "0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222".toLowerCase() ? tx.to : tx.from)}
                                     </td>
-                                    <td style={{padding: '5px'}}>
+                                    <td style={{ padding: '5px' }}>
                                         <button
-                                            onClick={() => goAddTag(tx, tx.from === currentAddress.toLowerCase() ? tx.to : tx.from)}
+                                            onClick={() => goAddTag(tx, tx.from === "0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222".toLowerCase() ? tx.to : tx.from)}
                                             style={{
                                                 padding: '5px 10px',
                                                 backgroundColor: '#4caf50',
@@ -226,31 +222,30 @@ const Popup = () => {
                 </div>
             ) : (
                 <div>
-                    <h2 style={{fontFamily: "Londrina Solid, Tofu"}}>Choose Tag</h2>
+                    <h2 style={{ fontFamily: "Londrina Solid, Tofu" }}>Choose Tag</h2>
                     <div>
                         {tags.map((tag, index) => (
                             <div
                                 key={tag}
-                                onClick={() => setSelectedTag(tag)}
+                                onClick={() => handleTagClick(tag)}
                                 style={{
-                                    display: 'inline-flex', // 使用 inline-flex 使其不独占一行
-                                    alignItems: 'center',   // 图片和文字垂直居中
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
                                     padding: '5px 10px',
                                     margin: '5px',
                                     borderRadius: '20px',
-                                    backgroundColor: selectedTag === tag ? '#4caf50' : '#ccc',
+                                    backgroundColor: selectedTag === tag ? selectedTagColor : '#ccc',
                                     color: '#fff',
                                     cursor: 'pointer',
                                     fontFamily: "Londrina Solid, Tofu"
                                 }}
                             >
-                                {/* 显示已分配的随机图片 */}
-                                <img src={tagImages[index]} alt="" style={{width: '20px', height: '20px', marginRight: '5px'}}/>
+                                <img src={tagImages[index]} alt="" style={{ width: '20px', height: '20px', marginRight: '5px' }} />
                                 {tag}
                             </div>
                         ))}
                     </div>
-                    <div style={{marginTop: '20px', fontFamily: "Londrina Solid, Tofu"}}>
+                    <div style={{ marginTop: '20px', fontFamily: "Londrina Solid, Tofu" }}>
                         <label htmlFor="contentInput">Content:</label>
                         <input
                             type="text"
@@ -258,11 +253,11 @@ const Popup = () => {
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             placeholder="Enter content"
-                            style={{display: 'block', marginBottom: '10px', width: '100%', padding: '5px', borderRadius: '5px', marginTop: '3px', border: "1px solid"}}
+                            style={{ display: 'block', marginBottom: '10px', width: '100%', padding: '5px', borderRadius: '5px', marginTop: '3px', border: "1px solid" }}
                         />
                         <button
                             onClick={handleSave}
-                            style={{marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none"}}>
+                            style={{ marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none" }}>
                             {isConfirming ? 'Tagging...' : 'Tag'}
                         </button>
                         {isConfirmed && (
@@ -284,7 +279,5 @@ const Popup = () => {
         </div>
     );
 };
-
-// ReactDOM.render(<Popup />, document.getElementById('root'));
 
 export default Popup;
