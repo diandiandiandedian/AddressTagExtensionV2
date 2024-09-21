@@ -96,7 +96,9 @@ const Popup = () => {
     }, []);
 
     if (!userHasEmbeddedWallet()) {
-        return <div>Please sign in to wallet</div>;
+        return <div style={{height:'100%',width:'100%',display:'flex',placeItems:'center',justifyContent:'center'}}>
+            Please sign in to wallet
+        </div>
     }
 
     const fetchTransactionData = async (address) => {
