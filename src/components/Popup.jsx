@@ -143,7 +143,7 @@ const Popup = () => {
             return;
         }
 
-        const transactionLink = `https://etherscan.io/tx/${selectedTx.hash}`;
+        const transactionLink = `https://sepolia.etherscan.io/tx/${selectedTx.hash}`;
         const payload = {
             content,
             link: transactionLink,
