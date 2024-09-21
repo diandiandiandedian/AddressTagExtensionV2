@@ -29,7 +29,7 @@ const Popup = () => {
     const [saveAddress, setSaveAddress] = useState('');
     const [selectedTx, setSelectedTx] = useState(null);
     const [tags] = useState([
-        "项目方地址", "白客", "黑客", "Whale Trader", "Malicious Actor",
+        "Founder", "White Hat", "Hacker", "Whale Trader", "Malicious Actor",
         "Whale Holder", "Arbitrage Trader", "Airdrop Hunter", "Long-term Holder",
         "NFT Collector", "Bot Address", "DeFi Enthusiast", "Newbie Address",
         "Miner Address", "Airdrop Distributor", "DEX Liquidity Provider"
@@ -60,12 +60,6 @@ const Popup = () => {
 
 
     const {userHasEmbeddedWallet} = useEmbeddedWallet();
-
-    if (!userHasEmbeddedWallet()) {
-        return <div>
-            Please sign in to wallet
-        </div>
-    }
 
 
     // 预先加载图片列表
@@ -100,7 +94,11 @@ const Popup = () => {
             }
         });
     }, []);
-
+    if (!userHasEmbeddedWallet()) {
+        return <div>
+            Please sign in to wallet
+        </div>
+    }
     const fetchTransactionData = async (address) => {
         const url = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=IGT34AFR7ABQUKYEWJAQ65A1Y5JV11UYH4`;
 
@@ -141,7 +139,7 @@ const Popup = () => {
         }
 
         if (!selectedTag) {
-            alert("请选择一个标签");
+            alert("Please choose a tag");
             return;
         }
 
@@ -164,7 +162,7 @@ const Popup = () => {
 
         sendPostRequest('https://testapi.ezswap.io/addressTag/save', {address: saveAddress, content: content, link: transactionLink, tag: selectedTag}, (error, response) => {
             if (error) {
-                console.error('请求失败:', error);
+                console.error('Request Failed:', error);
                 return;
             }
         });

@@ -107,7 +107,7 @@ window.addEventListener('load', () => {
     // 加载时请求标签数据
     sendPostRequest('https://testapi.ezswap.io/addressTag/queryAddressTagList', { address: extractedAddress }, (error, response) => {
         if (error) {
-            console.error('请求失败:', error);
+            console.error('Request Failed:', error);
             return;
         }
 
