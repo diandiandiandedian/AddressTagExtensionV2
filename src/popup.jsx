@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import './style.css';
 
 const Popup = () => {
     const [transactions, setTransactions] = useState([]);
@@ -13,36 +14,34 @@ const Popup = () => {
     ]);
     const [selectedTag, setSelectedTag] = useState('');
     const [content, setContent] = useState('');
-    const [link, setLink] = useState('');
+    const [link, setLink] = useState([]);
+
+    // 预先加载图片列表
+    const images = Array.from({ length: 10 }, (_, index) => `/heads/${index + 1}.png`);
+
+    // 为每个标签生成一个随机图片，仅在首次渲染时生成
+    const [tagImages] = useState(tags.map(() => images[Math.floor(Math.random() * images.length)]));
 
     // 保留两个入口
     useEffect(() => {
-        console.log('addressaaaaaaaaa')
         const queryParams = new URLSearchParams(window.location.search);
         const address = queryParams.get('address');
         setCurrentAddress(address);
 
         if (address) {
-            console.log('address', address)
             fetchTransactionData(address);
         }
     }, []);
 
     function getAddressFromURL(url) {
         const match = url.match(/\/address\/(0x[a-fA-F0-9]{40})/);
-        if (match && match[1]) {
-            return match[1];
-        }
-        return null;
+        return match ? match[1] : null;
     }
 
     useEffect(() => {
-        console.log('addressaaaaaaaabbbbbbba')
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             const url = tabs[0].url;
-            console.log('url', url)
             const address = getAddressFromURL(url);
-            console.log('url', address)
             if (address) {
                 setCurrentAddress(address);
                 fetchTransactionData(address);
@@ -111,7 +110,6 @@ const Popup = () => {
             });
         });
 
-        // sendPostRequest('https://testapi.ezswap.io/addressTag/save', {address: currentAddress, content: content,link: transactionLink,tag: selectedTag}, (error, response) => {
         sendPostRequest('http://localhost:8085/addressTag/save', {address: currentAddress, content: content,link: transactionLink,tag: selectedTag}, (error, response) => {
             if (error) {
                 console.error('请求失败:', error);
@@ -122,10 +120,8 @@ const Popup = () => {
         setContent('');
         setLink('');
         alert(`已保存: ${selectedTag}`);
-        // window.close();
     };
 
-    // 截取字符串前3位和后3位，中间使用省略号
     const shortenAddress = (address) => {
         return address.length > 6 ? `${address.substring(0, 6)}...${address.substring(address.length - 6)}` : address;
     };
@@ -134,8 +130,8 @@ const Popup = () => {
         <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
             {!selectedTx ? (
                 <div>
-                    <h2>Tx List</h2>
-                    <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                    <h2 style={{ fontFamily: "Londrina Solid, Tofu", fontSize: '20px' }}>Tx List</h2>
+                    <div style={{ maxHeight: '400px', overflowY: 'auto', fontFamily: "Londrina Solid, Tofu" }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                             <tr>
@@ -174,27 +170,31 @@ const Popup = () => {
                 </div>
             ) : (
                 <div>
-                    <h2>Choose Tag</h2>
+                    <h2 style={{ fontFamily: "Londrina Solid, Tofu" }}>Choose Tag</h2>
                     <div>
-                        {tags.map(tag => (
+                        {tags.map((tag, index) => (
                             <div
                                 key={tag}
                                 onClick={() => setSelectedTag(tag)}
                                 style={{
-                                    display: 'inline-block',
+                                    display: 'inline-flex', // 使用 inline-flex 使其不独占一行
+                                    alignItems: 'center',   // 图片和文字垂直居中
                                     padding: '5px 10px',
                                     margin: '5px',
                                     borderRadius: '20px',
                                     backgroundColor: selectedTag === tag ? '#4caf50' : '#ccc',
                                     color: '#fff',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    fontFamily: "Londrina Solid, Tofu"
                                 }}
                             >
+                                {/* 显示已分配的随机图片 */}
+                                <img src={tagImages[index]} alt="" style={{ width: '20px', height: '20px', marginRight: '5px' }} />
                                 {tag}
                             </div>
                         ))}
                     </div>
-                    <div style={{ marginTop: '20px' }}>
+                    <div style={{ marginTop: '20px', fontFamily: "Londrina Solid, Tofu" }}>
                         <label htmlFor="contentInput">Content:</label>
                         <input
                             type="text"
@@ -202,11 +202,11 @@ const Popup = () => {
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             placeholder="Enter content"
-                            style={{ display: 'block', marginBottom: '10px', width: '100%', padding: '5px',borderRadius: '5px', marginTop:'3px',border:"1px solid" }}
+                            style={{ display: 'block', marginBottom: '10px', width: '100%', padding: '5px', borderRadius: '5px', marginTop: '3px', border: "1px solid" }}
                         />
                         <button
                             onClick={handleSave}
-                            style={{ marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white',borderRadius: '5px',border:"none" }}>
+                            style={{ marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none" }}>
                             Save
                         </button>
                     </div>

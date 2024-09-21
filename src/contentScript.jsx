@@ -57,7 +57,7 @@ const ContentApp = () => {
     return (
         <div>
             {tags.map((tag, index) => (
-                <div key={index} style={{ display: 'inline-block', padding: '5px 15px', margin: '5px', borderRadius: '20px', backgroundColor: '#4caf50', color: '#fff', fontSize: '14px', fontWeight: 'bold', boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)', cursor: tag.link ? 'pointer' : 'default', textDecoration: tag.link ? 'underline' : 'none' }}
+                <div key={index} style={{ display: 'inline-block', padding: '5px 15px', margin: '5px', borderRadius: '20px', backgroundColor: '#4caf50', color: '#fff', fontSize: '14px', fontWeight: 'bold', boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)', cursor: tag.link ? 'pointer' : 'default', textDecoration: tag.link ? 'underline' : 'none',fontFamily: "Londrina Solid, Tofu" }}
                      onClick={() => tag.link && window.open(tag.link, '_blank')}
                 >
                     {tag.content}
