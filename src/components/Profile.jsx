@@ -8,9 +8,11 @@ const Profile = () => {
         <div style={{padding:'10px'}}>
             <h1>Hello from My Chrome Extension</h1>
             <DynamicConnection />
-            <div style={{marginTop:'16px'}}></div>
-            <WorldcoinConnection/>
-            <SendSBT/>
+            <div style={{marginTop:'24px'}}></div>
+            <WorldcoinConnection/>  
+            <div style={{height:'100px',width:'100%'}}></div>
+
+            {/* <SendSBT/> */}
         </div>  
     );
 }
