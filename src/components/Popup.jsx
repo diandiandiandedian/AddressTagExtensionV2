@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useWriteContract, useWaitForTransactionReceipt, useSimulateContract } from 'wagmi'
-import { useEmbeddedWallet } from "@dynamic-labs/sdk-react-core";
+import React, {useState, useEffect} from 'react';
+import {useWriteContract, useWaitForTransactionReceipt, useSimulateContract} from 'wagmi'
+import {useEmbeddedWallet} from "@dynamic-labs/sdk-react-core";
 
 const abi = [
-  {
-    "type": "function",
-    "name": "mintAddressTagSBT",
-    "inputs": [
-      {
-        "name": "target",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "id",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  }
+    {
+        "type": "function",
+        "name": "mintAddressTagSBT",
+        "inputs": [
+            {
+                "name": "target",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    }
 ]
 
 const Popup = () => {
     const [transactions, setTransactions] = useState([]);
     const [currentAddress, setCurrentAddress] = useState('');
+    const [saveAddress, setSaveAddress] = useState('');
     const [selectedTx, setSelectedTx] = useState(null);
     const [tags] = useState([
         "项目方地址", "白客", "黑客", "Whale Trader", "Malicious Actor",
@@ -37,38 +38,38 @@ const Popup = () => {
     const [content, setContent] = useState('');
     const [link, setLink] = useState([]);
 
-    const { data: simulateData } = useSimulateContract({
+    const {data: simulateData} = useSimulateContract({
         address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: ['0xA552c195A6eEC742B61042531fb92732F8A91D6b', 0n],
-      })
-    
-      const { writeContract, data, error, isPending } = useWriteContract()
-    
-      const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    })
+
+    const {writeContract, data, error, isPending} = useWriteContract()
+
+    const {isLoading: isConfirming, isSuccess: isConfirmed} =
         useWaitForTransactionReceipt({
-          hash: data,
+            hash: data,
         })
-    
-      const handleMint = () => {
+
+    const handleMint = () => {
         if (simulateData) {
-          writeContract(simulateData.request)
+            writeContract(simulateData.request)
         }
-      }
+    }
 
 
-      const {userHasEmbeddedWallet} = useEmbeddedWallet();
+    const {userHasEmbeddedWallet} = useEmbeddedWallet();
 
-      if(!userHasEmbeddedWallet()){
-          return <div>
-              Please sign in to wallet
-          </div>
-      }
+    if (!userHasEmbeddedWallet()) {
+        return <div>
+            Please sign in to wallet
+        </div>
+    }
 
-      
+
     // 预先加载图片列表
-    const images = Array.from({ length: 10 }, (_, index) => `/heads/${index + 1}.png`);
+    const images = Array.from({length: 10}, (_, index) => `/heads/${index + 1}.png`);
 
     // 为每个标签生成一个随机图片，仅在首次渲染时生成
     const [tagImages] = useState(tags.map(() => images[Math.floor(Math.random() * images.length)]));
@@ -90,7 +91,7 @@ const Popup = () => {
     }
 
     useEffect(() => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
             const url = tabs[0].url;
             const address = getAddressFromURL(url);
             if (address) {
@@ -101,7 +102,7 @@ const Popup = () => {
     }, []);
 
     const fetchTransactionData = async (address) => {
-        const url = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=IGT34AFR7ABQUKYEWJAQ65A1Y5JV11UYH4`;
+        const url = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=IGT34AFR7ABQUKYEWJAQ65A1Y5JV11UYH4`;
 
         try {
             const response = await fetch(url);
@@ -152,16 +153,16 @@ const Popup = () => {
             tag: selectedTag
         };
 
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, {
-                type: 'addTag',
-                content: payload.content,
-                link: payload.link,
-                address: payload.address
-            });
-        });
+        // chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        //     chrome.tabs.sendMessage(tabs[0].id, {
+        //         type: 'addTag',
+        //         content: payload.content,
+        //         link: payload.link,
+        //         address: payload.address
+        //     });
+        // });
 
-        sendPostRequest('http://localhost:8085/addressTag/save', {address: currentAddress, content: content,link: transactionLink,tag: selectedTag}, (error, response) => {
+        sendPostRequest('https://testapi.ezswap.io/addressTag/save', {address: saveAddress, content: content, link: transactionLink, tag: selectedTag}, (error, response) => {
             if (error) {
                 console.error('请求失败:', error);
                 return;
@@ -178,30 +179,35 @@ const Popup = () => {
         return address.length > 6 ? `${address.substring(0, 6)}...${address.substring(address.length - 6)}` : address;
     };
 
+    const goAddTag = (tx, address) => {
+        setSelectedTx(tx)
+        setSaveAddress(address)
+    };
+
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <div style={{padding: '20px', fontFamily: 'Arial, sans-serif'}}>
             {!selectedTx ? (
                 <div>
-                    <h2 style={{ fontFamily: "Londrina Solid, Tofu", fontSize: '20px' }}>Tx List</h2>
-                    <div style={{ maxHeight: '400px', overflowY: 'auto', fontFamily: "Londrina Solid, Tofu" }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <h2 style={{fontFamily: "Londrina Solid, Tofu", fontSize: '20px'}}>Tx List</h2>
+                    <div style={{maxHeight: '400px', overflowY: 'auto', fontFamily: "Londrina Solid, Tofu"}}>
+                        <table style={{width: '100%', borderCollapse: 'collapse'}}>
                             <thead>
                             <tr>
-                                <th style={{ textAlign: 'left', padding: '5px' }}>Hash</th>
-                                <th style={{ textAlign: 'left', padding: '5px' }}>Address</th>
-                                <th style={{ textAlign: 'left', padding: '5px' }}>Action</th>
+                                <th style={{textAlign: 'left', padding: '5px'}}>Hash</th>
+                                <th style={{textAlign: 'left', padding: '5px'}}>Address</th>
+                                <th style={{textAlign: 'left', padding: '5px'}}>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             {transactions.map(tx => (
-                                <tr key={tx.hash} style={{ borderBottom: '1px solid #ddd' }}>
-                                    <td style={{ padding: '5px' }}>{shortenAddress(tx.hash)}</td>
-                                    <td style={{ padding: '5px' }}>
+                                <tr key={tx.hash} style={{borderBottom: '1px solid #ddd'}}>
+                                    <td style={{padding: '5px'}}>{shortenAddress(tx.hash)}</td>
+                                    <td style={{padding: '5px'}}>
                                         {shortenAddress(tx.from === currentAddress.toLowerCase() ? tx.to : tx.from)}
                                     </td>
-                                    <td style={{ padding: '5px' }}>
+                                    <td style={{padding: '5px'}}>
                                         <button
-                                            onClick={() => setSelectedTx(tx)}
+                                            onClick={() => goAddTag(tx, tx.from === currentAddress.toLowerCase() ? tx.to : tx.from)}
                                             style={{
                                                 padding: '5px 10px',
                                                 backgroundColor: '#4caf50',
@@ -222,7 +228,7 @@ const Popup = () => {
                 </div>
             ) : (
                 <div>
-                    <h2 style={{ fontFamily: "Londrina Solid, Tofu" }}>Choose Tag</h2>
+                    <h2 style={{fontFamily: "Londrina Solid, Tofu"}}>Choose Tag</h2>
                     <div>
                         {tags.map((tag, index) => (
                             <div
@@ -241,12 +247,12 @@ const Popup = () => {
                                 }}
                             >
                                 {/* 显示已分配的随机图片 */}
-                                <img src={tagImages[index]} alt="" style={{ width: '20px', height: '20px', marginRight: '5px' }} />
+                                <img src={tagImages[index]} alt="" style={{width: '20px', height: '20px', marginRight: '5px'}}/>
                                 {tag}
                             </div>
                         ))}
                     </div>
-                    <div style={{ marginTop: '20px', fontFamily: "Londrina Solid, Tofu" }}>
+                    <div style={{marginTop: '20px', fontFamily: "Londrina Solid, Tofu"}}>
                         <label htmlFor="contentInput">Content:</label>
                         <input
                             type="text"
@@ -254,24 +260,24 @@ const Popup = () => {
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             placeholder="Enter content"
-                            style={{ display: 'block', marginBottom: '10px', width: '100%', padding: '5px', borderRadius: '5px', marginTop: '3px', border: "1px solid" }}
+                            style={{display: 'block', marginBottom: '10px', width: '100%', padding: '5px', borderRadius: '5px', marginTop: '3px', border: "1px solid"}}
                         />
                         <button
                             onClick={handleSave}
-                            style={{ marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none" }}>
+                            style={{marginTop: '10px', padding: '10px', backgroundColor: '#5cb85c', color: 'white', borderRadius: '5px', border: "none"}}>
                             {isConfirming ? 'Tagging...' : 'Tag'}
                         </button>
                         {isConfirmed && (
                             <div>
-                            Successfully tagged the address!
-                            <div>
-                                <a href={`https://testnet.airdao.io/explorer/tx/${data}`}>Explorer</a>
-                            </div>
+                                Successfully tagged the address!
+                                <div>
+                                    <a href={`https://testnet.airdao.io/explorer/tx/${data}`}>Explorer</a>
+                                </div>
                             </div>
                         )}
                         {error && (
                             <div>
-                            An error occurred: {error.message}
+                                An error occurred: {error.message}
                             </div>
                         )}
                     </div>

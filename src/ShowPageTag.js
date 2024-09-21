@@ -27,10 +27,17 @@ function sendPostRequest(url, data, callback) {
     xhr.send(JSON.stringify(data));
 }
 
-// 创建标签的函数
+// 创建标签的函数，添加随机图标
 function createTag(content, link) {
+    // 预先定义随机图片的路径数组
+    const images = Array.from({ length: 49 }, (_, index) => `https://web3gamefi.s3.us-west-2.amazonaws.com/${index + 1}.png`);
+
+    // 从图片列表中随机选择一张图片
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+
     const customDiv = document.createElement('div');
-    customDiv.style.display = 'inline-block';
+    customDiv.style.display = 'inline-flex'; // 使用 inline-flex 使其不独占一行
+    customDiv.style.alignItems = 'center';   // 图片和文字垂直居中
     customDiv.style.padding = '5px 15px';
     customDiv.style.margin = '5px';
     customDiv.style.borderRadius = '20px';
@@ -39,7 +46,19 @@ function createTag(content, link) {
     customDiv.style.fontSize = '14px';
     customDiv.style.fontWeight = 'bold';
     customDiv.style.boxShadow = '2px 2px 8px rgba(0, 0, 0, 0.2)';
-    customDiv.textContent = content || '';
+
+    // 创建 img 元素并将其添加到 customDiv
+    const imgElement = document.createElement('img');
+    imgElement.src = randomImage;
+    imgElement.alt = 'icon';
+    imgElement.style.width = '20px';
+    imgElement.style.height = '20px';
+    imgElement.style.marginRight = '5px';
+    customDiv.appendChild(imgElement);
+
+    // 添加标签内容
+    const contentText = document.createTextNode(content || '');
+    customDiv.appendChild(contentText);
 
     if (link) {
         customDiv.style.cursor = 'pointer';
@@ -86,7 +105,7 @@ window.addEventListener('load', () => {
     chrome.runtime.sendMessage({ type: 'address', address: extractedAddress });
 
     // 加载时请求标签数据
-    sendPostRequest('http://localhost:8085/addressTag/queryAddressTagList', { address: extractedAddress }, (error, response) => {
+    sendPostRequest('https://testapi.ezswap.io/addressTag/queryAddressTagList', { address: extractedAddress }, (error, response) => {
         if (error) {
             console.error('请求失败:', error);
             return;
