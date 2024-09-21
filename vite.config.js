@@ -9,12 +9,13 @@ export default defineConfig({
       input: {
         popup: resolve(__dirname, 'public/popup.html'), // popup.html 位于 public 目录
         background: resolve(__dirname, 'src/background.js'), // 确保 background.js 被打包
-        contentScript: resolve(__dirname, 'src/contentScript.jsx') // 添加 contentScript.jsx 以确保打包
+        ShowPageTag: resolve(__dirname, 'src/ShowPageTag.js') // 确保 ShowPageTag.js 被打包
       },
       output: {
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
+        assetFileNames: `assets/[name].[ext]`,
+        format: 'es', // 使用 ES Module 格式替换 iife
       }
     }
   }
