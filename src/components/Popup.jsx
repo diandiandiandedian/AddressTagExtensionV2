@@ -66,7 +66,7 @@ const Popup = () => {
     const [tagImages] = useState(tags.map(() => images[Math.floor(Math.random() * images.length)]));
 
     // 颜色数组
-    const tagColors = ['#0784c3', '#4caf50', '#FF0000'];
+    const tagColors = ['#0784c3', '#4caf50', '#FF0000','#cc9a0680'];
 
     // 保留两个入口
     useEffect(() => {

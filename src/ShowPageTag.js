@@ -43,7 +43,7 @@ function createTag(content, link) {
     customDiv.style.borderRadius = '20px';
 
     // 随机选择一个颜色
-    const colors = ['#0784c3', '#4caf50', '#FF0000'];
+    const colors = ['#0784c3', '#4caf50', '#FF0000','#cc9a0680'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     customDiv.style.backgroundColor = randomColor;
 
