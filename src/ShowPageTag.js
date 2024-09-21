@@ -51,8 +51,8 @@ function createTag(content, link) {
     const imgElement = document.createElement('img');
     imgElement.src = randomImage;
     imgElement.alt = 'icon';
-    imgElement.style.width = '20px';
-    imgElement.style.height = '20px';
+    imgElement.style.width = '30px';
+    imgElement.style.height = '30px';
     imgElement.style.marginRight = '5px';
     customDiv.appendChild(imgElement);
 
@@ -122,8 +122,8 @@ window.addEventListener('load', () => {
             });
 
             // 在标签列表后面添加 "Add New" 按钮
-            const addNewButton = createAddNewButton();
-            targetElement.appendChild(addNewButton);
+            // const addNewButton = createAddNewButton();
+            // targetElement.appendChild(addNewButton);
         }
     });
 
