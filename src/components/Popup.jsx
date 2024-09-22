@@ -26,7 +26,8 @@ const abi = [
 const Popup = () => {
     const [transactions, setTransactions] = useState([]);
     const [currentAddress, setCurrentAddress] = useState('');
-    const [saveAddress, setSaveAddress] = useState('');
+    const [selfAddress, setSelfAddress] = useState('');
+    const [otherAddress, setOtherAddress] = useState('');
     const [selectedTx, setSelectedTx] = useState(null);
     const [tags] = useState([
         "Founder", "White Hat", "Hacker", "Whale Trader", "Malicious Actor",
@@ -39,11 +40,19 @@ const Popup = () => {
     const [content, setContent] = useState('');
     const [link, setLink] = useState([]);
 
+    const result = useSimulateContract({
+        address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+        abi: abi,
+        functionName: 'mintAddressTagSBT',
+        args: [selfAddress, 0n],
+    });
+    console.log('result',result)
+
     const {data: simulateData} = useSimulateContract({
         address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
         abi: abi,
         functionName: 'mintAddressTagSBT',
-        args: [saveAddress, 0n],
+        args: [selfAddress, 0n],
     });
 
     useEffect(()=>{
@@ -157,7 +166,7 @@ const Popup = () => {
             tag: selectedTag
         };
 
-        sendPostRequest('https://testapi.ezswap.io/addressTag/save', { address: saveAddress, content: content, link: transactionLink, tag: selectedTag }, (error, response) => {
+        sendPostRequest('https://testapi.ezswap.io/addressTag/save', { address: otherAddress, content: content, link: transactionLink, tag: selectedTag }, (error, response) => {
             if (error) {
                 console.error('Request Failed:', error);
                 return;
@@ -173,9 +182,12 @@ const Popup = () => {
         return address.length > 6 ? `${address.substring(0, 6)}...${address.substring(address.length - 6)}` : address;
     };
 
-    const goAddTag = (tx, address) => {
+    const goAddTag = (tx, selfAddress,_otherAddress) => {
+        console.log('selfAddress',selfAddress)
+        console.log('_otherAddress',_otherAddress)
         setSelectedTx(tx);
-        setSaveAddress(address);
+        setSelfAddress(selfAddress);
+        setOtherAddress(_otherAddress);
     };
 
     const handleTagClick = (tag) => {
@@ -207,7 +219,7 @@ const Popup = () => {
                                     </td>
                                     <td style={{ padding: '5px' }}>
                                         <button
-                                            onClick={() => goAddTag(tx, tx.from === "0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222".toLowerCase() ? tx.to : tx.from)}
+                                            onClick={() => goAddTag(tx, tx.from === "0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222".toLowerCase() ? tx.from : tx.to,tx.from === "0xFc331e6254A3ABb0aE9a4A955973E01C7F2fE222".toLowerCase() ? tx.to : tx.from)}
                                             style={{
                                                 padding: '5px 10px',
                                                 backgroundColor: '#4caf50',
