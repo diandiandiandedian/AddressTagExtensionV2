@@ -43,8 +43,12 @@ const Popup = () => {
         address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
         abi: abi,
         functionName: 'mintAddressTagSBT',
-        args: ['0xA552c195A6eEC742B61042531fb92732F8A91D6b', 0n],
+        args: [saveAddress, 0n],
     });
+
+    useEffect(()=>{
+        console.log(simulateData)
+    },[simulateData])
 
     const {writeContract, data, error, isPending} = useWriteContract();
     const {isLoading: isConfirming, isSuccess: isConfirmed} = useWaitForTransactionReceipt({

@@ -26,7 +26,7 @@ export const SendSBT = () => {
     address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
     abi: abi,
     functionName: 'mintAddressTagSBT',
-    args: ['0xA552c195A6eEC742B61042531fb92732F8A91D6b', 0n],
+    args: ['0x093054c80ab62D90CC71E490Ce8a7554cfEB2a62', 0],
   })
 
   const { writeContract, data, error, isPending } = useWriteContract()
@@ -37,15 +37,18 @@ export const SendSBT = () => {
     })
 
   const handleMint = () => {
-    if (simulateData) {
-      writeContract(simulateData.request)
-    }
+    writeContract({
+      address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+      abi: abi,
+      functionName: 'mintAddressTagSBT',
+      args: ['0x093054c80ab62D90CC71E490Ce8a7554cfEB2a62', 0n],
+    })
   }
 
   return (
     <div>
       <p>Tag with SBT</p>
-      <button disabled={!simulateData || isPending || isConfirming} onClick={handleMint}>
+      <button onClick={handleMint}>
         {isConfirming ? 'Tagging...' : 'Tag'}
       </button>
       {isConfirmed && (
@@ -61,6 +64,7 @@ export const SendSBT = () => {
           An error occurred: {error.message}
         </div>
       )}
+      <div style={{height:'100px'}}></div>
     </div>
   )
 }
