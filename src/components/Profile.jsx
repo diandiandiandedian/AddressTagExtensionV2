@@ -6,7 +6,7 @@ const Profile = () => {
 
     return (
         <div style={{padding:'10px'}}>
-            <h1>Hello from My Chrome Extension</h1>
+            <h1>Identity Tagger</h1>
             <DynamicConnection />
             <div style={{marginTop:'24px'}}></div>
             <WorldcoinConnection/>  
