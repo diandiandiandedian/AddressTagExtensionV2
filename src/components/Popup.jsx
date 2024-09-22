@@ -41,7 +41,7 @@ const Popup = () => {
     const [link, setLink] = useState([]);
 
     const result = useSimulateContract({
-        address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+        address: '0xE35a7d016e9Cc957609ca0F50E846EcdcC7f7807',
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: [selfAddress, 0n],
@@ -49,7 +49,7 @@ const Popup = () => {
     console.log('result',result)
 
     const {data: simulateData} = useSimulateContract({
-        address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+        address: '0xE35a7d016e9Cc957609ca0F50E846EcdcC7f7807',
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: [selfAddress, 0n],
