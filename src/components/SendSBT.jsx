@@ -38,10 +38,10 @@ export const SendSBT = () => {
 
   const handleMint = () => {
     writeContract({
-      address: '0x2EC5CfDE6F37029aa8cc018ED71CF4Ef67C704AE',
+      address: '0xE35a7d016e9Cc957609ca0F50E846EcdcC7f7807',
       abi: abi,
       functionName: 'mintAddressTagSBT',
-      args: ['0x093054c80ab62D90CC71E490Ce8a7554cfEB2a62', 0n],
+      args: ['0x453CbaDd89b8da9154Cf2B09c2D841bc651F50a5', 0n],
     })
   }
 

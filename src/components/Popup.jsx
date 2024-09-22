@@ -40,24 +40,27 @@ const Popup = () => {
     const [content, setContent] = useState('');
     const [link, setLink] = useState([]);
 
+
     const result = useSimulateContract({
         address: '0xE35a7d016e9Cc957609ca0F50E846EcdcC7f7807',
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: [selfAddress, 0n],
     });
-    console.log('result',result)
 
-    const {data: simulateData} = useSimulateContract({
+
+    const {data:simulateDate} = useSimulateContract({
         address: '0xE35a7d016e9Cc957609ca0F50E846EcdcC7f7807',
         abi: abi,
         functionName: 'mintAddressTagSBT',
         args: [selfAddress, 0n],
     });
 
+
+
     useEffect(()=>{
-        console.log(simulateData)
-    },[simulateData])
+        console.log(result)
+    },[result])
 
     const {writeContract, data, error, isPending} = useWriteContract();
     const {isLoading: isConfirming, isSuccess: isConfirmed} = useWaitForTransactionReceipt({
@@ -65,8 +68,9 @@ const Popup = () => {
     });
 
     const handleMint = () => {
-        if (simulateData) {
-            writeContract(simulateData.request);
+        console.log(result.data)
+        if (simulateDate) {
+            writeContract(simulateDate.request);
         }
     };
 
